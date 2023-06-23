@@ -2,13 +2,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Test Web Page</title>
 </head>
 <body>
-  <h1>OADINC</h1>
-  <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sit porro fugit, ullam quibusdam, ab facilis repellat quos ipsam incidunt unde nobis quod ducimus sapiente? Reiciendis, hic aliquid. Porro, praesentium dicta.</p>
-  <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sit porro fugit, ullam quibusdam, ab facilis repellat quos ipsam incidunt unde nobis quod ducimus sapiente? Reiciendis, hic aliquid. Porro, praesentium dicta.</p>
-  <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sit porro fugit, ullam quibusdam, ab facilis repellat quos ipsam incidunt unde nobis quod ducimus sapiente? Reiciendis, hic aliquid. Porro, praesentium dicta.</p>
-  <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sit porro fugit, ullam quibusdam, ab facilis repellat quos ipsam incidunt unde nobis quod ducimus sapiente? Reiciendis, hic aliquid. Porro, praesentium dicta.</p>  
+<form>
+    <label>This is a test.<br></label>
+    <input type="number" id="Number_Input_Test" name="number" value="0" min="0" max="32">
+    <input type="button" id="Button_Input_Test" value="Calculate">
+    <p class="output" id="Output_P1"></p>
+</form>
+<script type="text/javascript">
+    const Num1 = document.getElementById('Number_Input_Test');
+    const Btn1 = document.getElementById('Button_Input_Test');
+    const Out1 = document.getElementById('Output_P1');
+
+    
+    function changeText(element, value) {
+        document.getElementById(element).innerHTML = value;
+    }
+    
+    function fun1() {
+        var Num1_Value = parseInt(Num1.value, 10);
+        var Output_Text = "Result...";
+        if (Num1_Value > 16) { 
+            Output_Text = "True";
+        } else {
+            Output_Text = "False";
+        }
+        changeText('Output_P1', Output_Text);
+    }
+    Btn1.addEventListener('click',fun1);
+
+</script>
+
 </body>
 </html>
