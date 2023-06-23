@@ -6,14 +6,101 @@
 </head>
 <body>
 <form>
-    <label>This is a test.<br></label>
-    <input type="number" id="Number_Input_Test" name="number" value="0" min="0" max="32">
+    <label>This is a test.<br>
+    Is entered value more then 16?<br></label>
+    <input type="number" id="Num_Wagons" name="number" value="0" min="0" max="32">
     <input type="button" id="Button_Input_Test" value="Calculate">
     <p class="output" id="Output_P1"></p>
+    <p> Total Weight</p>
+    <p id="Loc">Selected Loc</p>
 </form>
+</script>
+<select id="Select_Loc"> 
+    <option>Choose a locomotive</option>
+</select>
+<select id="Select_Wagon_0"> 
+    <option>Choose a Wagon</option>
+</select>
+<select id="Select_Wagon_1"> 
+    <option>Choose a Wagon</option>
+</select>
+<select id="Select_Wagon_2"> 
+    <option>Choose a Wagon</option>
+</select>
+<select id="Select_Wagon_3"> 
+    <option>Choose a Wagon</option>
+</select>
+
 <script type="text/javascript">
-    const Num1 = document.getElementById('Number_Input_Test');
-    const Btn1 = document.getElementById('Button_Input_Test');
+    //Locomotives
+    let Locomotives = {
+        Porter_1: {Mass: 7242, Length: 4, Tractive_Effort: 12.8, Display_Name: "Porter 1"},
+        Porter_2: {Mass: 8145, Length: 4.8, Tractive_Effort: 12.8, Display_Name: "Porter 2"},
+        Montezuma: {Mass: 14969, Length: 11, Tractive_Effort: 16.2, Display_Name: "Montezuma"},
+        Shay: {Mass: 21754, Length: 8.1, Tractive_Effort: 26.2, Display_Name: "Shay"},
+        Tenmile: {Mass: 19848, Length: 11.8, Tractive_Effort: 37.7, Display_Name: "Tenmile"},
+        Eureka: {Mass:17164 , Length: 13.1, Tractive_Effort: 25, Display_Name: "Eureka"},
+        Glenbrook: {Mass: 17128, Length: 13.5, Tractive_Effort: 34.1, Display_Name: "Glenbrook"},
+        DRGW_Class_48: {Mass: 14969, Length: 7.7, Tractive_Effort: 41.7, Display_Name: "D&RGW Class 48"},
+        Mosca: {Mass: 25348, Length: 13.8, Tractive_Effort: 38.3, Display_Name: "Mosca"},
+        Cooke_Mogul: {Mass: 26388, Length: 15.1, Tractive_Effort: 52.8, Display_Name: "Cooke Mogul"},
+        Heisler: {Mass: 28064, Length: 9.1, Tractive_Effort: 57.9, Display_Name: "Heisler"},
+        Ruby_Basin: {Mass: 33042, Length: 10.3, Tractive_Effort: 60.1, Display_Name: "Ruby Basin"},
+        Cooke_Consilidation: {Mass: 26706, Length: 15.1, Tractive_Effort: 59.9, Display_Name: "Cooke Consilidation"},
+        Climax: {Mass: 24194, Length: 8.7, Tractive_Effort: 76.6, Display_Name: "Climax"},
+        DRG_Class_70: {Mass: 15468, Length: 15.6, Tractive_Effort: 68.8, Display_Name: "D&RG Class 70"},
+        ETWNC_2_8_0: {Mass: 16545, Length: 16.2, Tractive_Effort: 73.6, Display_Name: "ET&WNC 2-8-0"}
+    };
+    //Wagons
+    let Wagons = {
+        No_Car: {Mass: 0, Length: 0, Display_Name: "No_Car", Cargo: {}},
+        Skeleton_Car: {Mass: 3000, Length: 6.4, Display_Name: "Skeleton Car", Cargo: {Logs: 5}},
+        Flatcar_Rounds: {Mass: 3800, Length: 8.4, Display_Name: "Flatcar Rounds", Cargo: {Logs: 6, Steel_Pipes: 9}},
+        Flatcar_Stakes: {Mass: 4000, Length: 8.4, Display_Name: "Flatcar Stakes", Cargo: {Lumber: 6, Beams: 3, Raw_Iron: 3, Rails: 10}},
+        Flatcar_Bulkhead: {Mass: 4100, Length: 8.4, Display_Name: "Flatcar Bulkhead", Cargo: {Cordwood: 6, Oil_Barrels: 46}},
+        Hopper: {Mass: 6000, Length: 8.2, Display_Name: "Hopper", Cargo: {Iron_ore: 10, Coal_Ore: 10}},
+        EBT_Hopper: {Mass: 6000, Length: 7.75, Display_Name: "EBT Hopper", Cargo: {Iron_ore: 8, Coal_Ore: 10}},
+        Tanker: {Mass: 13968, Length: 8.1, Display_Name: "Tanker", Cargo: {Crude_Oil: 12}},
+        Coffin_Tank_Car: {Mass: 14250, Length: 10, Display_Name: "Coffin Tank Car", Cargo: {Crude_Oil: 8}},
+        Box_Car: {Mass: 7938, Length: 8.1, Display_Name: "Box Car", Cargo: {Tool_Crates: 32}},
+        Stock_Car: {Mass: 8000, Length: 9.4, Display_Name: "Stock Car", Cargo: {Tool_Crates: 32}},
+        Bobber_Caboose: {Mass: 5400, Length: 6.8, Display_Name: "Bobber Caboose", Cargo: {}},
+        DSPP_Waycar: {Mass: 5000, Length: 6.1, Display_Name: "DSP&P Waycar", Cargo: {}},
+        Snow_Plow: {Mass: 6000, Length: 6, Display_Name: "Snow Plow", Cargo: {}}
+    };
+    //Cargo Types
+    let Cargo_Types = {
+        Logs: {Money: 10, Mass: 2000, Display_Name: "Logs"},
+        Cordwood: {Money: 10, Mass: 1200, Display_Name: "Cordwood"},
+        Beams: {Money: 24, Mass: 1410, Display_Name: "Beams"},
+        Lumber: {Money: 12, Mass: 1350, Display_Name: "Lumber"},
+        Iron_Ore: {Money: 20, Mass: 1000, Display_Name: "Iron Ore"},
+        Coal_Ore: {Money: 15, Mass: 1000, Display_Name: "Coal Ore"},
+        Raw_Iron: {Money: 25, Mass: 1490, Display_Name: "Raw Iron"},
+        Rails: {Money: 25, Mass: 900, Display_Name: "Rails"},
+        Steel_Pipes: {Money: 40, Mass: 1800, Display_Name: "Steel Pipes"},
+        Tool_Crates: {Money: 30, Mass: 100, Display_Name: "Tool Crates"},
+        Crude_Oil: {Money: 25, Mass: 1000, Display_Name: "Crude Oil"},
+        Oil_Barrels: {Money: 40, Mass: 137, Display_Name: "Oil Barrels"}
+    };
+
+    function Mk_DropDown(Id, Distionairy){
+        var Options = document.getElementById(Id);
+        Object.keys(Distionairy).forEach(key => {
+            Options.appendChild(new Option(Distionairy[key]['Display_Name'], key));
+        });
+    }
+    
+    Mk_DropDown("Select_Loc", Locomotives);
+    Mk_DropDown("Select_Wagon_0", Wagons);
+    Mk_DropDown("Select_Wagon_1", Wagons);
+    Mk_DropDown("Select_Wagon_2", Wagons);
+    Mk_DropDown("Select_Wagon_3", Wagons);
+
+
+
+    const Num_Wagons = document.getElementById('Num_Wagons');
+    const BTN_Calc = document.getElementById('Button_Input_Test');
     const Out1 = document.getElementById('Output_P1');
 
     
@@ -21,19 +108,32 @@
         document.getElementById(element).innerHTML = value;
     }
     
-    function fun1() {
-        var Num1_Value = parseInt(Num1.value, 10);
+
+
+    function Calculate() {
+        var Num_Wagons_Value = parseInt(Num_Wagons.value, 10);
         var Output_Text = "Result...";
-        if (Num1_Value > 16) { 
+        if (Num_Wagons_Value > 16) { 
             Output_Text = "True";
         } else {
             Output_Text = "False";
         }
         changeText('Output_P1', Output_Text);
+        
+        let Weight = 0;
+        Weight += Locomotives[document.getElementById("Select_Loc").value]['Mass'];
+        Weight += Wagons[document.getElementById("Select_Wagon_0").value]['Mass'];
+        Weight += Wagons[document.getElementById("Select_Wagon_1").value]['Mass'];
+        Weight += Wagons[document.getElementById("Select_Wagon_2").value]['Mass'];
+        Weight += Wagons[document.getElementById("Select_Wagon_3").value]['Mass'];
+
+
+
+        changeText('Loc', Weight);
     }
-    Btn1.addEventListener('click',fun1);
+
+    BTN_Calc.addEventListener('click',Calculate);
 
 </script>
-
 </body>
 </html>
