@@ -6,31 +6,17 @@
 </head>
 <body>
 <form>
-    <label>This is a test.<br>
-    Is entered value more then 16?<br></label>
-    <input type="number" id="Num_Wagons" name="number" value="0" min="0" max="32">
-    <input type="button" id="Button_Input_Test" value="Calculate">
-    <p class="output" id="Output_P1"></p>
+    <input type="button" id="Calculate" value="Calculate">
     <p> Total Weight</p>
-    <p id="Loc">Selected Loc</p>
+    <p id="Loc_Sel">Selected Loc</p>
+
+    <input type="button" id="Add_Locomotive" value="Add a locomotive">
+    <input type="button" id="Add_Wagon" value="Add a wagon">
+    <input type="button" id="Reset" value="Reset">
+
 </form>
 </script>
-<select id="Select_Loc"> 
-    <option>Choose a locomotive</option>
-</select>
-<select id="Select_Wagon_0"> 
-    <option>Choose a Wagon</option>
-</select>
-<select id="Select_Wagon_1"> 
-    <option>Choose a Wagon</option>
-</select>
-<select id="Select_Wagon_2"> 
-    <option>Choose a Wagon</option>
-</select>
-<select id="Select_Wagon_3"> 
-    <option>Choose a Wagon</option>
-</select>
-
+<div id="Button_Div"></div>
 <script type="text/javascript">
     //Locomotives
     let Locomotives = {
@@ -84,56 +70,64 @@
         Oil_Barrels: {Money: 40, Mass: 137, Display_Name: "Oil Barrels"}
     };
 
-    function Mk_DropDown(Id, Distionairy){
+    let Vehicles = {Loc: -1, Wag: -1};
+
+    const Button_Calculate = document.getElementById('Calculate');
+    const Button_Add_Locomotive = document.getElementById('Add_Locomotive');
+    const Button_Add_Wagon = document.getElementById('Add_Wagon');
+    const Button_Reset = document.getElementById('Reset');
+
+    function Mk_DropDown(Id, Dictionairy){
         var Options = document.getElementById(Id);
-        Object.keys(Distionairy).forEach(key => {
-            Options.appendChild(new Option(Distionairy[key]['Display_Name'], key));
+        Object.keys(Dictionairy).forEach(key => {
+            Options.appendChild(new Option(Dictionairy[key]['Display_Name'], key));
         });
     }
     
-    Mk_DropDown("Select_Loc", Locomotives);
-    Mk_DropDown("Select_Wagon_0", Wagons);
-    Mk_DropDown("Select_Wagon_1", Wagons);
-    Mk_DropDown("Select_Wagon_2", Wagons);
-    Mk_DropDown("Select_Wagon_3", Wagons);
-
-
-
-    const Num_Wagons = document.getElementById('Num_Wagons');
-    const BTN_Calc = document.getElementById('Button_Input_Test');
-    const Out1 = document.getElementById('Output_P1');
-
     
     function changeText(element, value) {
         document.getElementById(element).innerHTML = value;
     }
     
-
-
-    function Calculate() {
-        var Num_Wagons_Value = parseInt(Num_Wagons.value, 10);
-        var Output_Text = "Result...";
-        if (Num_Wagons_Value > 16) { 
-            Output_Text = "True";
-        } else {
-            Output_Text = "False";
-        }
-        changeText('Output_P1', Output_Text);
-        
+    function Calculate_Train_Weight() {
         let Weight = 0;
-        Weight += Locomotives[document.getElementById("Select_Loc").value]['Mass'];
-        Weight += Wagons[document.getElementById("Select_Wagon_0").value]['Mass'];
-        Weight += Wagons[document.getElementById("Select_Wagon_1").value]['Mass'];
-        Weight += Wagons[document.getElementById("Select_Wagon_2").value]['Mass'];
-        Weight += Wagons[document.getElementById("Select_Wagon_3").value]['Mass'];
-
-
-
-        changeText('Loc', Weight);
+        console.log("B4: ", Vehicles['Loc']);
+        for(let i = 0; i <= Vehicles['Loc']; i++) {
+            //console.log(i, document.getElementById("Select_Loc_" + i).value);
+            Weight += Locomotives[document.getElementById("Select_Loc_" + i).value]['Mass'];
+        }
+        for(let i = 0; i <= Vehicles['Wag']; i++) {
+            Weight += Wagons[document.getElementById("Select_Wagon_" + i).value]['Mass'];
+        }
+        return Weight;
     }
 
-    BTN_Calc.addEventListener('click',Calculate);
+    function Calculate() {
+        changeText('Loc_Sel', Calculate_Train_Weight());
+    }
 
+    function Add_Locomotive() {
+        Vehicles['Loc']++;
+        document.getElementById("Button_Div").innerHTML = `<select id="Select_Loc_${Vehicles['Loc']}" > <option>Choose a locomotive</option></select>` + document.getElementById("Button_Div").innerHTML
+        Mk_DropDown("Select_Loc_" + Vehicles['Loc'], Locomotives);
+}
+
+    function Add_Wagon() {
+        Vehicles['Wag']++;
+        document.getElementById("Button_Div").innerHTML += `<select id="Select_Wagon_${Vehicles['Wag']}" > <option>Choose a wagon</option></select>`
+        Mk_DropDown("Select_Wagon_" + Vehicles['Wag'], Wagons);
+    }
+
+    function Reset() {
+        document.getElementById("Button_Div").innerHTML = "";
+        Vehicles['Loc'] = -1;
+        Vehicles['Wag'] = -1;
+    }
+
+    Button_Add_Locomotive.addEventListener('click', Add_Locomotive);
+    Button_Add_Wagon.addEventListener('click', Add_Wagon);
+    Button_Reset.addEventListener('click', Reset);
+    Button_Calculate.addEventListener('click', Calculate);
 </script>
 </body>
 </html>
